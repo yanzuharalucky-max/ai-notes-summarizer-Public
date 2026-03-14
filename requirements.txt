@@ -1,5 +1,0 @@
-Flask
-pytesseract
-Pillow
-transformers
-torch
