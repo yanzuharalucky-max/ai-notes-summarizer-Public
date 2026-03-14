@@ -1,0 +1,31 @@
+[
+    {
+        "name": "Lucky Yan Zuhara",
+        "email": "yanzuharalucky@gmail.com",
+        "password": "12345"
+    },
+    {
+        "name": "Yodi Dwi Cahyo",
+        "email": "dwichayo@gmail.com",
+        "password": "12345",
+        "joined": "15 November 2025 16:27"
+    },
+    {
+        "name": "Lintar Yan Zuhara",
+        "email": "lintar@gmail.com",
+        "password": "12345",
+        "joined": "15 November 2025 16:48"
+    },
+    {
+        "name": "Yodi Dwi Cahyo",
+        "email": "dwi@gmail.com",
+        "password": "12345",
+        "joined": "17 November 2025 16:00"
+    },
+    {
+        "name": "Lucky Yan Zuhara",
+        "email": "yanzuhara@gmail.com",
+        "password": "12345",
+        "joined": "18 November 2025 09:34"
+    }
+]
