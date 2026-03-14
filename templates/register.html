@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun - AI Notes Summarizer</title>
+
+    <style>
+        /* ---------------------------------------------------------
+           GLOBAL BACKGROUND + EFFECT PARTIKEL
+        --------------------------------------------------------- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0f1f, #111b3c, #0b0f24);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            margin: 0;
+            padding: 30px 0;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadePage 0.9s ease-out forwards;
+        }
+
+        @keyframes fadePage {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Partikel neon mengambang */
+        .particle {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            background: rgba(0, 255, 255, 0.85);
+            border-radius: 50%;
+            animation: floatUp 8s linear infinite;
+            filter: blur(2px);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(120vh) scale(0.4); opacity: 0.2; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-20vh) scale(1); opacity: 0; }
+        }
+
+        /* ---------------------------------------------------------
+           FRAME NEON (GLASSMORPHISM)
+        --------------------------------------------------------- */
+        .frame-box {
+            width: 850px;
+
+            padding: 3px;
+            border-radius: 18px;
+            background: rgba(0, 255, 255, 0.12);
+            box-shadow:
+                0 0 14px rgba(0, 255, 255, 0.7),
+                0 0 26px rgba(0, 255, 255, 0.45),
+                0 0 60px rgba(0, 255, 255, 0.22);
+            backdrop-filter: blur(6px);
+
+            animation: popFrame 0.9s ease-out;
+        }
+
+        @keyframes popFrame {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .inner-box {
+            width: 100%;
+            background: #0b0f14;
+            border-radius: 16px;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ---------------------------------------------------------
+           PANEL KIRI
+        --------------------------------------------------------- */
+        .left-side {
+            width: 50%;
+            padding: 45px;
+            background: #0e1218;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            animation: slideLeft 1s ease-out;
+        }
+
+        @keyframes slideLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .left-side h2 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #2bedff, #4a6cff, #9f27ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .left-side p {
+            font-size: 1em;
+            line-height: 1.6em;
+            color: #bfc7d8;
+            margin-top: 10px;
+        }
+
+        /* ---------------------------------------------------------
+           PANEL KANAN (FORM DAFTAR)
+        --------------------------------------------------------- */
+        .right-side {
+            position: relative;
+            width: 50%;
+            padding: 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            animation: slideRight 1s ease-out;
+        }
+
+        @keyframes slideRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Segitiga pemisah */
+        .right-side::before {
+            content: "";
+            position: absolute;
+            left: -120px;
+            width: 0;
+            height: 0;
+            border-top: 100% solid transparent;
+            border-right: 120px solid #0e1218;
+        }
+
+        h3 {
+            font-size: 1.55em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        /* ---------------------------------------------------------
+           INPUT FORM STYLING UPGRADE
+        --------------------------------------------------------- */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #2a3a4a;
+            padding: 9px;
+            color: #e6e6e6;
+            width: 85%;
+            margin: 12px 0;
+            font-size: 0.9em;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-bottom: 2px solid #00ffff;
+            box-shadow: 0px 6px 12px rgba(0, 255, 255, 0.15);
+        }
+
+        /* Tombol register dengan animasi gradient bergerak */
+        input[type="submit"] {
+            background: linear-gradient(90deg, #51e6ff, #506bff, #9c2bff);
+            background-size: 300%;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 20px;
+            color: white;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 0.93em;
+            transition: 0.4s;
+        }
+
+        input[type="submit"]:hover {
+            background-position: 100%;
+            transform: scale(1.07);
+            box-shadow:
+                0 0 12px rgba(81, 230, 255, 0.5),
+                0 0 22px rgba(156, 43, 255, 0.35);
+        }
+
+        .bottom-text {
+            margin-top: 15px;
+            font-size: 0.85em;
+            color: #ccc;
+        }
+
+        .bottom-text a {
+            color: #51e6ff;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .bottom-text a:hover {
+            color: #9c2bff;
+        }
+
+        /* ---------------------------------------------------------
+           FOOTER
+        --------------------------------------------------------- */
+        footer {
+            margin-top: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9em;
+            color: #aaa;
+            animation: fadeFooter 2s ease-out;
+        }
+
+        @keyframes fadeFooter {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        footer span {
+            color: #00ffff;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- GENERASI PARTIKEL NEON -->
+    <script>
+        for (let i = 0; i < 30; i++) {
+            let p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.animationDelay = (Math.random() * 5) + "s";
+            p.style.opacity = Math.random();
+            document.body.appendChild(p);
+        }
+    </script>
+
+    <div>
+        <div class="frame-box">
+            <div class="inner-box">
+
+                <!-- PANEL KIRI -->
+                <div class="left-side">
+                    <h2>Daftar Akun</h2>
+                    <p>Bergabunglah dengan AI Notes Summarizer untuk menikmati ringkasan otomatis, manajemen catatan modern, dan pengalaman AI yang lebih cepat!</p>
+                </div>
+
+                <!-- PANEL KANAN -->
+                <div class="right-side">
+                    <h3>Buat Akun Baru</h3>
+
+                    <form method="POST" action="{{ url_for('register') }}">
+                        <input type="text" name="name" placeholder="Nama Lengkap" required><br>
+                        <input type="email" name="email" placeholder="Email" required><br>
+                        <input type="password" name="password" placeholder="Kata Sandi" required><br>
+                        <input type="submit" value="Daftar">
+                    </form>
+
+                    <div class="bottom-text">
+                        Sudah punya akun? <a href="{{ url_for('login') }}">Login di sini</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer>© 2025 AI Notes Summarizer — by <span>Lucky Yan Zuhara</span></footer>
+    </div>
+
+</body>
+</html>
