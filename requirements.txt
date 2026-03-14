@@ -1,0 +1,8 @@
+Flask
+deep-translator
+langdetect
+python-docx
+SpeechRecognition
+pytesseract
+Pillow
+PyPDF2
