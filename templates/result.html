@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>✨ Hasil Ringkasan - AI Notes Summarizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    /* GLOBAL */
+    * { box-sizing: border-box; transition: .25s ease; }
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at top, #19153c, #0e0a25, #1a1733);
+      color: white;
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding-top: 120px;
+    }
+
+    /* PARTICLES */
+    .particles {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .particle {
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(0,255,255,0.7);
+      filter: blur(2px);
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      from { transform: translateY(120vh) scale(0.7); opacity: 0; }
+      to   { transform: translateY(-20vh) scale(1.2); opacity: 0.9; }
+    }
+
+    /* ORB */
+    .nav-orb {
+      position: fixed;
+      top: -180px; left: 50%;
+      transform: translateX(-50%);
+      width: 580px; height: 580px;
+      background: radial-gradient(circle, rgba(0,255,255,0.22), transparent 70%);
+      filter: blur(120px);
+      opacity: .85;
+      animation: orbFloat 9s ease-in-out infinite alternate;
+      z-index: 1;
+    }
+    @keyframes orbFloat {
+      from { transform: translateX(-50%) translateY(0); }
+      to   { transform: translateX(-50%) translateY(45px); }
+    }
+
+    /* NAVBAR */
+    nav {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 45px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 0 25px rgba(0,255,255,0.18);
+      animation: fadeDown .7s ease-out;
+      z-index: 100;
+    }
+    nav::after {
+      content: "";
+      position: absolute; bottom: -3px; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg,#00ffff,#8a2be2,#00ffff);
+      filter: blur(6px); opacity: .75;
+    }
+    nav h1 {
+      font-size: 1.6em;
+      font-weight: 700;
+      background: linear-gradient(90deg,#00ffff,#b388ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .links { display: flex; gap: 25px; align-items: center; }
+    .links a {
+      color: #00eaff; text-decoration: none;
+      padding: 8px 16px; border-radius: 12px;
+      font-weight: 600;
+    }
+    .links a:hover {
+      background: rgba(0,255,255,0.15);
+      box-shadow: 0 0 18px rgba(0,255,255,0.4);
+      transform: translateY(-2px);
+    }
+
+    /* PROFILE DROPDOWN */
+    .profile-container { position: relative; }
+    .btn-user {
+      background: linear-gradient(90deg,#00ffff,#8a2be2);
+      padding: 8px 20px; border-radius: 14px;
+      cursor: pointer; font-weight: 600;
+      box-shadow: 0 0 18px rgba(0,255,255,0.35);
+    }
+    .dropdown {
+      position: absolute; top: 48px; right: 0;
+      width: 240px; padding: 16px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 14px;
+      display: none;
+      backdrop-filter: blur(12px);
+    }
+    .dropdown.active { display: block; }
+
+    /* CARD CONTENT */
+    .box {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(12px);
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 25px 30px;
+      max-width: 900px;
+      margin: 25px auto;
+      animation: fadeUp .7s ease;
+      position: relative;
+      z-index: 10;
+
+      /* ⭐ DITAMBAH: ANIMASI CARD HISTORY */
+      overflow: hidden;
+      box-shadow:
+        0 0 35px rgba(0,255,255,0.15),
+        0 0 75px rgba(150,50,255,0.15),
+        inset 0 0 20px rgba(255,255,255,0.03);
+    }
+
+    /* ⭐ DITAMBAH: GARIS ANIMASI DI ATAS CARD */
+    .box::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #00ffff, #b044ff, transparent);
+      animation: cardLine 3s linear infinite;
+    }
+
+    @keyframes cardLine {
+      from { left: -100%; }
+      to { left: 100%; }
+    }
+
+    /* ⭐ DITAMBAH: HOVER EFFECT SEPERTI HISTORY */
+    .box:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow:
+        0 0 50px rgba(0,255,255,0.35),
+        0 0 100px rgba(150,50,255,0.35);
+    }
+
+    .summary-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 18px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* BUTTONS */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 25px;
+      gap: 14px;
+    }
+    .btn {
+      background: linear-gradient(90deg,#00ffff,#8a2be2);
+      padding: 10px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 0 25px rgba(0,255,255,0.3);
+    }
+    .btn:hover { transform: scale(1.05); }
+
+    .share-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+      padding: 10px 0;
+    }
+    .share-btn {
+      padding: 10px 18px;
+      border-radius: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: rgba(255,255,255,0.06);
+      color: white;
+      border: 1px solid rgba(0,255,255,0.25);
+      box-shadow: inset 0 0 12px rgba(0,255,255,0.15),
+                  0 0 12px rgba(0,255,255,0.18);
+    }
+    .share-btn:hover {
+      background: linear-gradient(90deg,#00ffff55,#8a2be255);
+      transform: translateY(-3px) scale(1.07);
+      box-shadow: 0 0 20px #00ffff55;
+    }
+
+    footer { text-align:center; margin:40px 0; color:#aaa; }
+    footer span { color:#00ffff; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(25px);} to{opacity:1;transform:none;} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-25px);} to{opacity:1;transform:none;} }
+  </style>
+</head>
+
+<body>
+
+<div class="particles"></div>
+
+<script>
+for (let i = 0; i < 35; i++) {
+  const p = document.createElement("div");
+  p.className = "particle";
+  p.style.left = Math.random() * 100 + "vw";
+  p.style.animationDuration = (4 + Math.random()*6) + "s";
+  document.querySelector(".particles").appendChild(p);
+}
+</script>
+
+<div class="nav-orb"></div>
+
+<nav>
+  <h1>💬 AI Notes Summarizer</h1>
+
+  <div class="links">
+      <a href="{{ url_for('index') }}">🏠 Beranda</a>
+      <a href="{{ url_for('history') }}">📜 Riwayat</a>
+      <a href="{{ url_for('about') }}">🤖 About AI</a>
+
+    <div class="profile-container">
+      <div class="btn-user" onclick="toggleDropdown()">👤 {{ user.name }}</div>
+      <div id="profileDropdown" class="dropdown">
+        <p><b>Nama:</b> {{ user.name }}</p>
+        <p><b>Email:</b> {{ user.email }}</p>
+        <hr style="border:1px solid rgba(255,255,255,0.1);">
+        <a href="{{ url_for('logout') }}" style="color:#ff6f6f;text-decoration:none;">🚪 Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+{% if text %}
+<div class="box">
+  <h3>📄 Teks Asli</h3>
+  <p>{{ text }}</p>
+</div>
+{% endif %}
+
+{% if summary %}
+<div class="box">
+  <h3>✨ Ringkasan</h3>
+  <div id="summaryCard" class="summary-card">
+    <p style="color:#ccc;">Memproses ringkasan...</p>
+  </div>
+</div>
+
+<div class="actions">
+  <button onclick="copySummary()" class="btn">📋 Salin</button>
+  <a href="{{ url_for('download', filename=filename) }}" class="btn">⬇️ Unduh Ringkasan</a>
+
+  <div class="share-group">
+    <button class="share-btn" onclick="shareWA()">💬 WhatsApp</button>
+    <button class="share-btn" onclick="shareTelegram()">📨 Telegram</button>
+    <button class="share-btn" onclick="shareFB()">📘 Facebook</button>
+    <button class="share-btn" onclick="shareX()">❌ X / Twitter</button>
+    <button class="share-btn" onclick="copySummary()">📋 Copy</button>
+  </div>
+</div>
+{% endif %}
+
+<footer>© 2025 <span>Lucky Yan Zuhara</span></footer>
+
+<textarea id="summaryTextRaw" style="display:none;">{{ summary }}</textarea>
+
+<script>
+function toggleDropdown(){
+  document.getElementById("profileDropdown").classList.toggle("active");
+}
+
+window.addEventListener("click", (e)=>{
+  if (!e.target.matches(".btn-user")) {
+    document.getElementById("profileDropdown").classList.remove("active");
+  }
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  const raw = `{{ summary | replace("\r","") }}`.trim();
+  const container = document.getElementById("summaryCard");
+  if (!raw) return;
+
+  let parts = raw.split(/\n|•|-|–|—|;|:/).map(s=>s.trim()).filter(Boolean);
+  if (parts.length <= 1) {
+    parts = raw.split(/(?<=\.)\s+/).map(s=>s.trim()).filter(Boolean);
+  }
+
+  const ul = document.createElement("ul");
+  parts.forEach((p, i)=>{
+    const li = document.createElement("li");
+    li.style.animation = `fadeUp .65s ease ${(i*150)}ms forwards`;
+
+    const mark = document.createElement("div");
+    mark.className = "marker";
+
+    const txt = document.createElement("div");
+    txt.textContent = p;
+
+    li.appendChild(mark);
+    li.appendChild(txt);
+    ul.appendChild(li);
+  });
+
+  container.innerHTML = "";
+  container.appendChild(ul);
+});
+
+function copySummary() {
+  const ta = document.getElementById("summaryTextRaw");
+  ta.select(); 
+  document.execCommand("copy");
+  alert("✅ Ringkasan berhasil disalin!");
+}
+
+function shareWA(){
+  const t = document.getElementById("summaryTextRaw").value;
+  window.open(`https://wa.me/?text=${encodeURIComponent(t)}`);
+}
+function shareTelegram(){
+  const t = document.getElementById("summaryTextRaw").value;
+  window.open(`https://t.me/share/url?text=${encodeURIComponent(t)}`);
+}
+function shareFB(){
+  const t = document.getElementById("summaryTextRaw").value;
+  window.open(`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(t)}`);
+}
+function shareX(){
+  const t = document.getElementById("summaryTextRaw").value;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(t)}`);
+}
+</script>
+
+</body>
+</html>
