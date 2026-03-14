@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pengguna - AI Notes Summarizer</title>
+
+    <style>
+        * { box-sizing: border-box; transition: .25s ease; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top, #0b0f24, #050616);
+            color: white;
+            margin: 0;
+            overflow-x: hidden;
+            animation: bodyFade 1.1s ease;
+        }
+
+        @keyframes bodyFade {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================================
+           🔥 NAVBAR PREMIUM — SOLID DARK + CLEAN NO WHITE BUG
+        ===============================================================*/
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 16px 45px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            /* 🔥 SOLID DARK FIX */
+            background: #0a0d1a !important;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 0 18px rgba(0,0,0,0.55);
+
+            z-index: 99;
+
+            opacity: 0;
+            transform: translateY(-6px);
+            animation: navbarFade 0.55s ease-out forwards;
+        }
+
+        @keyframes navbarFade {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        nav h1 {
+            font-size: 1.7em;
+            background: linear-gradient(90deg, #00ffff, #b788ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glowTitle 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowTitle { 
+            from { filter: drop-shadow(0 0 1px #00ffff); } 
+            to { filter: drop-shadow(0 0 10px #b788ff); } 
+        }
+
+        .links { display: flex; gap: 25px; align-items: center; }
+
+        .links a {
+            color: #00eaff;
+            padding: 8px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            opacity: .85;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        /* ✨ Underline Hover Elegan */
+        .links a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 0%;
+            height: 2px;
+            background: #00eaff;
+            border-radius: 4px;
+            transition: width .35s ease;
+        }
+
+        .links a:hover::after {
+            width: 100%;
+        }
+
+        .links a:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .profile-container-nav { position: relative; }
+
+        .btn-user {
+            background: linear-gradient(90deg, #00ffff, #8a2be2);
+            padding: 9px 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 0 12px rgba(0,255,255,0.25);
+            transition: 0.3s;
+        }
+
+        .btn-user:hover { transform: translateY(-2px) scale(1.05); }
+
+        .dropdown {
+            position: absolute;
+            right: 0;
+            margin-top: 14px;
+            width: 240px;
+            padding: 14px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(14px);
+            border-radius: 14px;
+            box-shadow: 0 0 26px rgba(0,255,255,0.3);
+            display: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: 0.35s;
+        }
+
+        .dropdown.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        /* ============================================================
+            🌟 PROFILE PAGE — tidak diubah, tetap milikmu
+        ============================================================*/
+
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #19ffff;
+            border-radius: 50%;
+            opacity: 0.25;
+            filter: blur(1px);
+            animation: floatUp 9s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh); opacity: 0; }
+            25% { opacity: .8; }
+            100% { transform: translateY(-15vh); opacity: 0; }
+        }
+
+        .profile-container {
+            display: flex;
+            justify-content: center;
+            padding: 160px 20px 90px;
+            animation: fadeUp .9s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px) scale(.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .profile-box {
+            width: 650px;
+            padding: 55px;
+            border-radius: 32px;
+            background: rgba(255,255,255,0.055);
+            border: 1px solid rgba(0,255,255,0.22);
+            backdrop-filter: blur(28px);
+            text-align: center;
+
+            box-shadow:
+                0 0 45px rgba(0,255,255,0.18),
+                0 0 120px rgba(0,255,255,0.09) inset;
+        }
+
+        .avatar {
+            width: 130px;
+            height: 130px;
+            margin: auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #34efff, #8d6bff, #ff36fa);
+            padding: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow:
+                0 0 25px rgba(0,255,255,0.3),
+                0 0 55px rgba(255,36,255,0.2);
+            animation: avatarGlow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes avatarGlow {
+            from { transform: scale(1); filter: drop-shadow(0 0 6px #26f7ff); }
+            to   { transform: scale(1.04); filter: drop-shadow(0 0 14px #c236ff); }
+        }
+
+        .avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: url('https://cdn-icons-png.flaticon.com/512/747/747376.png') center/58% no-repeat;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .profile-box h2 {
+            font-size: 2.6em;
+            margin: 25px 0 14px;
+            background: linear-gradient(90deg, #25ddff, #7368ff, #ff3cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glowH 3s ease-in-out infinite alternate;
+        }
+
+        .divider {
+            width: 80%;
+            height: 1px;
+            margin: 20px auto 30px;
+            background: linear-gradient(90deg, transparent, #37e2ff, transparent);
+            opacity: .4;
+        }
+
+        .profile-detail {
+            font-size: 1.22em;
+            margin: 12px 0;
+            color: #d7deeb;
+        }
+
+        .profile-detail span {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .btn-area {
+            margin-top: 33px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .edit-btn, .logout-btn {
+            padding: 12px 32px;
+            border-radius: 26px;
+            border: none;
+            font-size: 1.05em;
+            cursor: pointer;
+            color: white;
+            transition: .35s;
+            box-shadow: 0 0 12px rgba(0,255,255,0.25);
+        }
+
+        .edit-btn {
+            background: linear-gradient(90deg, #4bf4ff, #675cff, #d633ff);
+        }
+
+        .logout-btn {
+            background: linear-gradient(90deg, #ff6b6b, #ff4242);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .edit-btn:hover, .logout-btn:hover {
+            transform: scale(1.07) translateY(-3px);
+            box-shadow: 0 0 30px rgba(0,255,255,0.35);
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            font-size: .9em;
+            color: #aaa;
+            margin-top: 60px;
+        }
+
+        footer span { color: #00ffff; }
+    </style>
+</head>
+
+<body>
+
+    <!-- PARTICLES -->
+    <div class="particles"></div>
+    <script>
+        const container = document.querySelector(".particles");
+        for (let i = 0; i < 70; i++) {
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "%";
+            p.style.animationDuration = 6 + Math.random() * 7 + "s";
+            p.style.animationDelay = Math.random() * 3 + "s";
+            container.appendChild(p);
+        }
+    </script>
+
+    <!-- NAVBAR (FIXED) -->
+    <nav>
+        <h1>💬 AI Notes Summarizer</h1>
+
+        <div class="links">
+            <a href="{{ url_for('index') }}">🏠 Beranda</a>
+            <a href="{{ url_for('history') }}">📜 Riwayat</a>
+
+            <div class="profile-container-nav">
+                <div class="btn-user" onclick="toggleDropdown()">👤 {{ user.name }}</div>
+
+                <div id="profileDropdown" class="dropdown">
+                    <p><b>Nama:</b> {{ user.name }}</p>
+                    <p><b>Email:</b> {{ user.email }}</p>
+
+                    <a href="{{ url_for('profile') }}" style="color:#00ffff;">👤 Lihat Profil</a>
+                    <hr style="border-color: rgba(255,255,255,0.2)">
+                    <a href="{{ url_for('logout') }}" style="color:#ff7777;">🚪 Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        function toggleDropdown() {
+            document.getElementById("profileDropdown").classList.toggle("active");
+        }
+
+        window.onclick = function (e) {
+            if (!e.target.matches(".btn-user")) {
+                document.getElementById("profileDropdown").classList.remove("active");
+            }
+        }
+    </script>
+
+    <!-- PROFILE CARD -->
+    <div class="profile-container">
+        <div class="profile-box">
+
+            <div class="avatar">
+                <div class="avatar-inner"></div>
+            </div>
+
+            <h2>Profil Pengguna</h2>
+            <div class="divider"></div>
+
+            <p class="profile-detail"><span>Nama:</span> {{ user.name }}</p>
+            <p class="profile-detail"><span>Email:</span> {{ user.email }}</p>
+
+            <div class="btn-area">
+                <button class="edit-btn">Edit Profil</button>
+                <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        © 2025 AI Notes Summarizer — by <span>Lucky Yan Zuhara</span>
+    </footer>
+
+</body>
+</html>
