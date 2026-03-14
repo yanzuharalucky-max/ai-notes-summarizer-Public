@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AI Notes Summarizer</title>
+
+    <style>
+        /* ---------------------------------------------------------
+           GLOBAL BACKGROUND ANIMASI (PARTIKEL NEON)
+        --------------------------------------------------------- */
+        body {
+            opacity: 0;
+            animation: fadeInLogin 0.9s ease-out forwards;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0f1f, #111b3c, #0b0f24);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Partikel neon terapung */
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(0, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: floatUp 8s linear infinite;
+            filter: blur(1px);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(120vh) scale(0.4); opacity: 0.2; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-20vh) scale(1); opacity: 0; }
+        }
+
+        /* ---------------------------------------------------------
+           FRAME & BOX
+        --------------------------------------------------------- */
+        .frame-box {
+            width: 780px;
+            height: 450px;
+            animation: popIn 0.9s ease-out;
+            padding: 3px;
+            border-radius: 18px;
+            background: rgba(0, 255, 255, 0.12);
+            box-shadow:
+                0 0 14px rgba(0, 255, 255, 0.7),
+                0 0 28px rgba(0, 255, 255, 0.35),
+                0 0 60px rgba(0, 255, 255, 0.22);
+            backdrop-filter: blur(6px);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .inner-box {
+            width: 100%;
+            height: 100%;
+            background: #0b0f14e9;
+            border-radius: 16px;
+            display: flex;
+            overflow: hidden;
+            animation: slideUp 1s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* ---------------------------------------------------------
+           KIRI FORM
+        --------------------------------------------------------- */
+        .left-side {
+            width: 50%;
+            padding: 40px;
+            background: #0e1218;
+            animation: fadeLeft 1.2s ease-out;
+        }
+
+        @keyframes fadeLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .left-side h2 {
+            font-size: 1.7em;
+            margin-bottom: 25px;
+            color: #d5d5d5;
+            font-weight: 600;
+        }
+
+        input[type="email"], input[type="password"] {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #666;
+            padding: 8px;
+            color: #ddd;
+            width: 85%;
+            margin: 15px 0;
+            transition: 0.25s;
+        }
+
+        input[type="email"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-bottom: 2px solid #00ffff;
+            box-shadow: 0 6px 12px rgba(0, 255, 255, 0.15);
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(90deg, #51e6ff, #506bff, #9c2bff);
+            background-size: 300%;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 20px;
+            color: white;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: 0.4s;
+        }
+
+        input[type="submit"]:hover {
+            background-position: 100%;
+            transform: scale(1.07);
+            box-shadow:
+                0 0 12px rgba(81, 230, 255, 0.5),
+                0 0 22px rgba(156, 43, 255, 0.35);
+        }
+
+        .bottom-text {
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #cfcfcf;
+        }
+
+        .bottom-text a {
+            color: #51e6ff;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .bottom-text a:hover {
+            color: #9c2bff;
+        }
+
+        /* ---------------------------------------------------------
+           ALERT / FLASH MESSAGE (SEKARANG ADA SUCCESS HIJAU)
+        --------------------------------------------------------- */
+        .alert {
+            width: 85%;
+            padding: 10px 14px;
+            margin-top: 5px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            animation: fadeFlash 0.4s ease-out;
+            backdrop-filter: blur(3px);
+        }
+
+        @keyframes fadeFlash {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Success - Hijau */
+        .alert.success {
+            background: rgba(0, 255, 135, 0.12);
+            border-left: 4px solid #00ff7a;
+            color: #b8ffd8;
+            box-shadow: 0 0 10px rgba(0,255,135,0.25);
+        }
+
+        /* Error - Merah */
+        .alert.error {
+            background: rgba(255, 90, 90, 0.13);
+            border-left: 4px solid #ff4a4a;
+            color: #ffb9b9;
+            box-shadow: 0 0 10px rgba(255,50,50,0.25);
+        }
+
+        /* Warning - Kuning */
+        .alert.warning {
+            background: rgba(255, 230, 100, 0.13);
+            border-left: 4px solid #ffe55c;
+            color: #fff2b3;
+            box-shadow: 0 0 10px rgba(255,230,100,0.25);
+        }
+
+        /* Info - Biru */
+        .alert.info {
+            background: rgba(80,170,255,0.13);
+            border-left: 4px solid #3bb0ff;
+            color: #c5e4ff;
+            box-shadow: 0 0 10px rgba(80,170,255,0.25);
+        }
+
+        /* ---------------------------------------------------------
+           KANAN PANEL
+        --------------------------------------------------------- */
+        .right-side {
+            position: relative;
+            width: 50%;
+            background: linear-gradient(135deg, #2bedff, #4a6cff, #9f27ff);
+            border-radius: 0 16px 16px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.2em;
+            font-weight: 600;
+            color: white;
+            animation: fadeRight 1.2s ease-out;
+        }
+
+        @keyframes fadeRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .right-side::before {
+            content: "";
+            position: absolute;
+            left: -160px;
+            width: 0;
+            height: 0;
+            border-top: 420px solid transparent;
+            border-right: 160px solid #0e1218;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9em;
+            color: #aaa;
+            animation: fadeIn 2s ease-out;
+        }
+
+        footer span {
+            color: #00ffff;
+            font-weight: 600;
+        }
+
+        @keyframes fadeInLogin {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PARTIKEL NEON -->
+    <script>
+        for (let i = 0; i < 30; i++) {
+            let p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.animationDelay = (Math.random() * 5) + "s";
+            p.style.opacity = Math.random();
+            document.body.appendChild(p);
+        }
+    </script>
+
+    <div class="frame-box">
+        <div class="inner-box">
+
+            <div class="left-side">
+                <h2>🔐 Login form</h2>
+
+                <!-- FLASH MESSAGE (SUDAH ADA WARNA HIJAU UNTUK SUCCESS) -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, msg in messages %}
+                            <div class="alert {{ category }}">{{ msg }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="{{ url_for('login') }}">
+                    <input type="email" name="email" placeholder="Email" required><br>
+                    <input type="password" name="password" placeholder="Kata Sandi" required><br>
+                    <input type="submit" value="Masuk">
+                </form>
+
+                <div class="bottom-text">
+                    Belum punya akun? <a href="{{ url_for('register') }}">Daftar Sekarang</a>
+                </div>
+            </div>
+
+            <div class="right-side">
+                Welcome
+            </div>
+
+        </div>
+    </div>
+
+    <footer>© 2025 AI Notes Summarizer — by <span>Lucky Yan Zuhara</span></footer>
+
+</body>
+</html>
